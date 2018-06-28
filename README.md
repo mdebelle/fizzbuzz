@@ -1,10 +1,10 @@
 FizzBuzz Server
 ===
 
-###requirement
+### requirement
 go version go1.10.2 or greater
 
-###get started
+### get started
 ```
 $>go get github.com/mdebelle/fizzbuzz
 $>go install fizzbuzz
@@ -13,7 +13,7 @@ $>$GOPATH/bin/fizzbuzz
 
 The server package handles requests on `http://localhost:8080//fizzbuzz`
 
-###example
+### example
 
 GET `http://localhost:8080/fizzbuzz?string1=fizz&int1=3&string2=buzz&int2=5&limit=100`
 
