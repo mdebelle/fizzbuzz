@@ -11,7 +11,7 @@ $>go install fizzbuzz
 $>$GOPATH/bin/fizzbuzz
 ```
 
-The server package handles requests on `http://localhost:8080//fizzbuzz`
+The server package handles requests on `http://localhost:8080/fizzbuzz`
 
 ### example
 

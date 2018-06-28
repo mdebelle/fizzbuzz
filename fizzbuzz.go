@@ -5,11 +5,6 @@ import (
 	"sync"
 )
 
-const (
-	algoNumberOne = 1
-	algoNumberTwo = 2
-)
-
 type FizzBuzz interface {
 	Convert(i int) string
 	Limit() int
