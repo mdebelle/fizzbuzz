@@ -17,7 +17,7 @@ The server package handles requests on `http://localhost:8080/fizzbuzz`
 
 GET `http://localhost:8080/fizzbuzz?string1=fizz&int1=3&string2=buzz&int2=5&limit=100`
 
-response
+response `200 OK`
 ```json
 [
     "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz",
@@ -32,4 +32,3 @@ response
     "91", "92", "fizz", "94", "buzz", "fizz", "97", "98", "fizz", "buzz"
 ]
 ```
-
