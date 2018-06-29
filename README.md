@@ -7,7 +7,8 @@ go version go1.10.2 or greater
 ### get started
 ```
 $>go get github.com/mdebelle/fizzbuzz
-$>go install fizzbuzz
+$>cd $GOPATH/src/github.com/mdebelle/fizzbuzz
+$>go install
 $>$GOPATH/bin/fizzbuzz
 ```
 
