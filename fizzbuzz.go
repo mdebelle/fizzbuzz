@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+// FizzBuzz to manipulatr fizzbuzz struct
 type FizzBuzz interface {
 	Convert(i int) string
 	Limit() int
@@ -38,7 +39,7 @@ func (f *fizzBuzz) Convert(i int) string {
 	return fmt.Sprint(i)
 }
 
-func algoOne(f FizzBuzz) []string {
+func render(f FizzBuzz) []string {
 	out := make([]string, f.Limit())
 	for i, j := 0, f.Limit()-1; i <= f.Limit()/2; i, j = i+1, j-1 {
 		out[i], out[j] = f.Convert(i+1), f.Convert(j+1)
@@ -51,14 +52,18 @@ func result(f FizzBuzz) []string {
 	var wg sync.WaitGroup
 
 	if f.Limit() <= 100 {
-		return algoOne(f)
+		return render(f)
 	}
 
 	nbgoroutine := f.Limit() / 100
+	if nbgoroutine > 100 {
+		nbgoroutine = 100
+	}
 
 	wg.Add(nbgoroutine)
 	apply := func(f FizzBuzz, min, max int) {
-		for i, j := min, max-1; i <= max/2; i, j = i+1, j-1 {
+		length := max - min
+		for i, j := min, max-1; i <= min+(length/2); i, j = i+1, j-1 {
 			out[i], out[j] = f.Convert(i+1), f.Convert(j+1)
 		}
 		wg.Done()

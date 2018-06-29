@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 func checkString(parameters url.Values, name string) (string, error) {
@@ -81,11 +82,23 @@ func writeError(w http.ResponseWriter, err error) {
 	http.Error(w, fmt.Sprintf("could not fizz-buzz: %v", err), http.StatusBadRequest)
 }
 
+func isError(err error) string {
+	if err != nil {
+		return "\033[22;31mERROR \033[0m"
+	}
+	return ""
+}
+
 func main() {
 
 	http.HandleFunc("/fizzbuzz", func(w http.ResponseWriter, r *http.Request) {
+		received := time.Now().UTC()
+		var err error
+		defer func(t time.Time) {
+			log.Printf("%s[%s] %s %v", isError(err), r.Method, r.URL.String(), time.Since(t))
+		}(received)
 		f := fizzBuzz{}
-		if err := checkFizzBuzz(&f, w, r); err != nil {
+		if err = checkFizzBuzz(&f, w, r); err != nil {
 			writeError(w, err)
 			return
 		}
