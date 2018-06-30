@@ -101,8 +101,10 @@ func main() {
 			m, err = checkInt(r.URL.Query(), "motifs")
 			if err == nil && m > 0 {
 				motifs = m
+				w.WriteHeader(http.StatusOK)
+			} else {
+				w.WriteHeader(http.StatusNotAcceptable)
 			}
-			w.WriteHeader(http.StatusOK)
 			return
 		}
 
