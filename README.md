@@ -35,7 +35,9 @@ response `200 OK`
 ```
 
 if you want you can change the number of motifs with
+
 OPTIONS `http://localhost:8080/fizzbuzz?motifs=1`
+
 response `200 OK`
 
 GET `http://localhost:8080/fizzbuzz?string1=fizz&int1=3&limit=100`
