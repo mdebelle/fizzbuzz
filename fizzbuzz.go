@@ -12,11 +12,8 @@ type FizzBuzz interface {
 }
 
 type fizzBuzz struct {
-	fizz     string
-	buzz     string
-	fizzStep int
-	buzzStep int
-	limit    int
+	motifs map[int]string
+	limit  int
 }
 
 func (f *fizzBuzz) Limit() int { return f.limit }
@@ -27,16 +24,18 @@ func (f *fizzBuzz) Limit() int { return f.limit }
 // concatenation of fizz and buzz fields of fizzBuzz when i is a multiple of fizzStep and buzzStep field of fizzBuzz
 // in other case it will return i as a string
 func (f *fizzBuzz) Convert(i int) string {
-	if i%f.fizzStep == 0 {
-		str := f.fizz
-		if i%f.buzzStep == 0 {
-			str += f.buzz
+	var str string
+	var found bool
+	for k, v := range f.motifs {
+		if i%k == 0 {
+			str += v
+			found = true
 		}
-		return str
-	} else if i%f.buzzStep == 0 {
-		return f.buzz
 	}
-	return fmt.Sprint(i)
+	if !found {
+		return fmt.Sprint(i)
+	}
+	return str
 }
 
 func render(f FizzBuzz) []string {
@@ -49,7 +48,6 @@ func render(f FizzBuzz) []string {
 
 func result(f FizzBuzz) []string {
 	out := make([]string, f.Limit())
-	var wg sync.WaitGroup
 
 	if f.Limit() <= 100 {
 		return render(f)
@@ -60,7 +58,8 @@ func result(f FizzBuzz) []string {
 		nbgoroutine = 100
 	}
 
-	wg.Add(nbgoroutine)
+	wg := &sync.WaitGroup{}
+
 	apply := func(f FizzBuzz, min, max int) {
 		length := max - min
 		for i, j := min, max-1; i <= min+(length/2); i, j = i+1, j-1 {
@@ -70,6 +69,7 @@ func result(f FizzBuzz) []string {
 	}
 
 	for i := 0; i < nbgoroutine; i++ {
+		wg.Add(1)
 		go apply(f, f.Limit()*i/nbgoroutine, f.Limit()*(i+1)/nbgoroutine)
 	}
 

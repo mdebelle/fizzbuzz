@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+var motifs = 2
+
 func checkString(parameters url.Values, name string) (string, error) {
 	v, ok := parameters[name]
 	if !ok {
@@ -43,23 +45,19 @@ func checkInt(parameters url.Values, name string) (int, error) {
 
 func checkFizzBuzz(f *fizzBuzz, w http.ResponseWriter, r *http.Request) error {
 
-	if r.Method != http.MethodGet {
-		return fmt.Errorf("method '%s' not recognized", r.Method)
+	for i := 1; i <= motifs; i++ {
+		v, err := checkString(r.URL.Query(), fmt.Sprintf("string%d", i))
+		if err != nil {
+			return err
+		}
+		k, err := checkInt(r.URL.Query(), fmt.Sprintf("int%d", i))
+		if err != nil {
+			return err
+		}
+		f.motifs[k] = v
 	}
 
 	var err error
-	if f.fizz, err = checkString(r.URL.Query(), "string1"); err != nil {
-		return err
-	}
-	if f.buzz, err = checkString(r.URL.Query(), "string2"); err != nil {
-		return err
-	}
-	if f.fizzStep, err = checkInt(r.URL.Query(), "int1"); err != nil {
-		return err
-	}
-	if f.buzzStep, err = checkInt(r.URL.Query(), "int2"); err != nil {
-		return err
-	}
 	if f.limit, err = checkInt(r.URL.Query(), "limit"); err != nil {
 		return err
 	}
@@ -97,7 +95,22 @@ func main() {
 		defer func(t time.Time) {
 			log.Printf("%s[%s] %s %v", isError(err), r.Method, r.URL.String(), time.Since(t))
 		}(received)
-		f := fizzBuzz{}
+
+		if r.Method == http.MethodOptions {
+			var m int
+			m, err = checkInt(r.URL.Query(), "motifs")
+			if err == nil && m > 0 {
+				motifs = m
+			}
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		if r.Method != http.MethodGet {
+			writeError(w, fmt.Errorf("method '%s' not recognized", r.Method))
+		}
+
+		f := fizzBuzz{motifs: make(map[int]string, motifs)}
 		if err = checkFizzBuzz(&f, w, r); err != nil {
 			writeError(w, err)
 			return

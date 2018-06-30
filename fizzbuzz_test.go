@@ -3,7 +3,10 @@ package main
 import "testing"
 
 func newfb(limit int) FizzBuzz {
-	return &fizzBuzz{fizz: "fizz", buzz: "buzz", fizzStep: 3, buzzStep: 5, limit: limit}
+	return &fizzBuzz{motifs: map[int]string{
+		3: "fizz",
+		5: "buzz",
+	}, limit: limit}
 }
 
 func benchmarkRender(limit int, b *testing.B) {
@@ -44,6 +47,10 @@ func BenchmarkRender10000000(b *testing.B) {
 	benchmarkRender(10000000, b)
 }
 
+func BenchmarkRender100000000(b *testing.B) {
+	benchmarkRender(100000000, b)
+}
+
 func BenchmarkResult100(b *testing.B) {
 	benchmarkResult(100, b)
 }
@@ -68,3 +75,6 @@ func BenchmarkResult10000000(b *testing.B) {
 	benchmarkResult(10000000, b)
 }
 
+func BenchmarkResult100000000(b *testing.B) {
+	benchmarkResult(100000000, b)
+}
