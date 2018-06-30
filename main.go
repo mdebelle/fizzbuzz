@@ -76,8 +76,8 @@ func writeJson(w http.ResponseWriter, v interface{}, status int) {
 	}
 }
 
-func writeError(w http.ResponseWriter, err error) {
-	http.Error(w, fmt.Sprintf("could not fizz-buzz: %v", err), http.StatusBadRequest)
+func writeError(w http.ResponseWriter, err error, status int) {
+	http.Error(w, fmt.Sprintf("could not fizz-buzz: %v", err), status)
 }
 
 func isError(err error) string {
@@ -96,25 +96,25 @@ func main() {
 			log.Printf("%s[%s] %s %v", isError(err), r.Method, r.URL.String(), time.Since(t))
 		}(received)
 
-		if r.Method == http.MethodOptions {
+		if r.Method == http.MethodPut {
 			var m int
 			m, err = checkInt(r.URL.Query(), "motifs")
 			if err == nil && m > 0 {
 				motifs = m
 				w.WriteHeader(http.StatusOK)
 			} else {
-				w.WriteHeader(http.StatusNotAcceptable)
+				w.WriteHeader(http.StatusPreconditionFailed)
 			}
 			return
 		}
 
 		if r.Method != http.MethodGet {
-			writeError(w, fmt.Errorf("method '%s' not recognized", r.Method))
+			writeError(w, fmt.Errorf("method '%s' not recognized", r.Method), http.StatusNotImplemented)
 		}
 
 		f := fizzBuzz{motifs: make(map[int]string, motifs)}
 		if err = checkFizzBuzz(&f, w, r); err != nil {
-			writeError(w, err)
+			writeError(w, err, http.StatusPreconditionFailed)
 			return
 		}
 		writeJson(w, result(&f), http.StatusOK)

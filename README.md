@@ -36,7 +36,7 @@ response `200 OK`
 
 if you want you can change the number of motifs with
 
-OPTIONS `http://localhost:8080/fizzbuzz?motifs=1`
+PUT `http://localhost:8080/fizzbuzz?motifs=1`
 
 response `200 OK`
 
